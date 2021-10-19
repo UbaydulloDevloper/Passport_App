@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home"
+    app:startDestination="@id/homeSplash">
+
+    <fragment
+        android:id="@+id/homeSplash"
+        android:name="com.Developer.passportapp.HomeSplash"
+        android:label="fragment_home_splash"
+        tools:layout="@layout/fragment_home_splash" >
+        <action
+            android:id="@+id/action_homeSplash_to_addPassport"
+            app:destination="@id/addPassport" />
+        <action
+            android:id="@+id/action_homeSplash_to_showList"
+            app:destination="@id/showList" />
+    </fragment>
+    <fragment
+        android:id="@+id/addPassport"
+        android:name="com.Developer.passportapp.AddPassport"
+        android:label="fragment_add_passport"
+        tools:layout="@layout/fragment_add_passport" />
+    <fragment
+        android:id="@+id/showList"
+        android:name="com.Developer.passportapp.ShowList"
+        android:label="fragment_show_list"
+        tools:layout="@layout/fragment_show_list" >
+        <action
+            android:id="@+id/action_showList_to_aboutUser"
+            app:destination="@id/aboutUser" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutUser"
+        android:name="com.Developer.passportapp.AboutUser"
+        android:label="fragment_about_user"
+        tools:layout="@layout/fragment_about_user" />
+</navigation>
