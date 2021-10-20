@@ -24,17 +24,30 @@ class ShowList : Fragment() {
     ): View {
         binding = FragmentShowListBinding.inflate(layoutInflater)
         list = ArrayList()
-        appDatabase = AppDatabase.getInstance(binding.root.context)
-        list.addAll(appDatabase.userDao().getAllUser())
-        binding.recycleViewUsers.adapter = MyAdapters(list, object : MyAdapters.Click {
-            override fun itemClick(user: User, position: Int) {
-                findNavController().navigate(R.id.aboutUser, bundleOf("user" to user))
-            }
-        })
+
+
         binding.sorting.setOnClickListener {
             Toast.makeText(binding.root.context, "Sorting click", Toast.LENGTH_SHORT).show()
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        list = ArrayList()
+        appDatabase = AppDatabase.getInstance(binding.root.context)
+        list.addAll(appDatabase.userDao().getAllUser())
+         binding.recycleViewUsers.adapter = MyAdapters(list, object : MyAdapters.Click {
+             override fun itemClick(user: User, position: Int) {
+                 findNavController().navigate(R.id.aboutUser, bundleOf("user" to user))
+             }
+             override fun itemdelete(user: User, position: Int) {
+                 appDatabase.userDao().deleteUser(user)
+                 Toast.makeText(binding.root.context, "delete", Toast.LENGTH_SHORT).show()
+                 onResume()
+             }
+         })
+
     }
 
 

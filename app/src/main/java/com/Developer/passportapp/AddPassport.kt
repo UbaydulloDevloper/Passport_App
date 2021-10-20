@@ -36,8 +36,6 @@ class AddPassport : Fragment() {
     var absolutePath: ByteArray? = null
     var seriaNumber = ""
 
-
-    //
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -267,22 +265,45 @@ class AddPassport : Fragment() {
 
     }
 
+
+
+
+
+
+
+
+
     fun seriaNumberGet() {
-        var passportSeria = ""
+       /* var passportSeria = ""
         val listdate = appDatabase.userDao().getAllUser()
         val characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         for (i in 0..1) {
             passportSeria += Random().nextInt(characterSet.length).toString()
         }
-        for (i in 0 until 10) {
-            passportSeria += Random().nextInt(7)
+        for (i in 0 until 7) {
+            passportSeria += Random().nextInt(10)
         }
         for (i in listdate.indices) {
             if (listdate[i].seriaNumber == passportSeria) {
                 seriaNumberGet()
             }
         }
-        seriaNumber = passportSeria
+        seriaNumber = passportSeria*/
+
+        val rand = Random()
+
+        val str = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
+        var matn = ""
+        for (i in 0..1) {
+            val randomNumber = rand.nextInt(9)
+            matn += str[randomNumber]
+        }
+        for (i in 0..6) {
+            val randomNumber = rand.nextInt(9)
+            matn += randomNumber
+        }
+
+        seriaNumber = matn
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

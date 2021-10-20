@@ -24,11 +24,11 @@ class AboutUser : Fragment() {
 
         val user = arguments?.getSerializable("user") as User
 
-        binding.imageUsers.setImageURI(Uri.parse(user.imageUser))
+        binding.imageUsers.setImageURI(Uri.parse(user.imageUser.toString()))
         binding.usersNameFather.text = "${user.name}  ${user.fatherName} o'g'li"
         binding.aboutUsers.text =
             "Otasining ismi :${user.fatherName}\n Yashash joyi :${user.countryName} ${user.cityName}\n" +
-                    "yashash uy : ${user.addressHouse}\n Jinsi : ${user.M_or_F}\n Pasport olgan vaqti : ${user.dateReceipt}\n Pasport muddati : ${user.dateTerm}"
+                    "yashash uy : ${user.addressHouse}\n Jinsi : ${user.M_or_F}\n Pasport olgan vaqti : ${user.dateReceipt}\n Pasport muddati : ${user.dateTerm} \n Pasport Seria Number: ${user.seriaNumber}"
 
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
