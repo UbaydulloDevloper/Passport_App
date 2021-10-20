@@ -38,7 +38,6 @@ class AddPassport : Fragment() {
     lateinit var spiCountry: ArrayList<String>
     lateinit var spinner: ArrayList<String>
     lateinit var currentImagePath: String
-    lateinit var photoUri: Uri
 
     var absolutePath: ByteArray? = null
     var seriaNumber = ""
@@ -57,17 +56,7 @@ class AddPassport : Fragment() {
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.CAMERA
             ) {
-                val dialog = AlertDialog.Builder(binding.root.context)
-                dialog.setMessage("Rasmni kameradan yoki gallereyadan yuklashingiz mumkin:")
-                dialog.setPositiveButton("Camera") { _, _ ->
-                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    startActivityForResult(intent, 0)
-                }
-
-                dialog.setNegativeButton("Gallery") { dialog, which ->
-                    getImageContent.launch("image/*")
-                }
-                dialog.show()
+                getImageContent.launch("image/*")
             }.onDeclined {
                 if (it.hasDenied()) {
                     android.app.AlertDialog.Builder(context)
