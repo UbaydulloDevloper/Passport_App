@@ -2,6 +2,7 @@ package com.Developer.passportapp
 
 import Entity.User
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment

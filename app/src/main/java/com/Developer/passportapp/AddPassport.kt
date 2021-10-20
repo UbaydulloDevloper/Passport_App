@@ -2,9 +2,12 @@ package com.Developer.passportapp
 
 import DataBase.AppDatabase
 import Entity.User
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,8 +15,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 import com.Developer.passportapp.databinding.FragmentAddPassportBinding
 import com.github.florent37.runtimepermission.kotlin.askPermission
@@ -32,10 +37,12 @@ class AddPassport : Fragment() {
     lateinit var appDatabase: AppDatabase
     lateinit var spiCountry: ArrayList<String>
     lateinit var spinner: ArrayList<String>
+    lateinit var currentImagePath: String
+    lateinit var photoUri: Uri
 
     var absolutePath: ByteArray? = null
     var seriaNumber = ""
-
+    var image: String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,8 +51,6 @@ class AddPassport : Fragment() {
         appDatabase = AppDatabase.getInstance(binding.root.context)
         Spinner()
         seriaNumberGet()
-
-
 
         binding.imageUser.setOnClickListener {
             askPermission(
@@ -60,10 +65,7 @@ class AddPassport : Fragment() {
                 }
 
                 dialog.setNegativeButton("Gallery") { dialog, which ->
-                    startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                        addCategory(Intent.CATEGORY_OPENABLE)
-                        type = "image/*"
-                    }, 1)
+                    getImageContent.launch("image/*")
                 }
                 dialog.show()
             }.onDeclined {
@@ -86,11 +88,9 @@ class AddPassport : Fragment() {
                 }
             }
         }
-
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
-
         binding.btnSave.setOnClickListener {
             val name = binding.fName.text.toString().trim()
             val surename = binding.fLastName.text.toString().trim()
@@ -111,7 +111,7 @@ class AddPassport : Fragment() {
                                     if (podate != "") {
                                         if (podateEnd != "") {
                                             if (spinner != "") {
-                                                if (absolutePath != null) {
+                                                if (image != "") {
                                                     val bottomSheetDialog = BottomSheetDialog(
                                                         binding.root.context,
                                                         R.style.MyBottomSheet
@@ -139,7 +139,7 @@ class AddPassport : Fragment() {
                                                                 podate,
                                                                 podateEnd,
                                                                 spinner,
-                                                                absolutePath.toString(),
+                                                                image,
                                                                 seriaNumber
                                                             )
                                                         )
@@ -218,9 +218,7 @@ class AddPassport : Fragment() {
                     binding.root.context, "Ismingizni kiritmadingiz", Toast.LENGTH_SHORT
                 ).show()
             }
-
         }
-
         return binding.root
     }
 
@@ -266,29 +264,49 @@ class AddPassport : Fragment() {
     }
 
 
+    @SuppressLint("SimpleDateFormat")
+    private val getImageContent =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri ->
+            uri ?: return@registerForActivityResult
+            binding.imageUser.setImageURI(uri)
 
+            val inputStream = activity?.contentResolver?.openInputStream(uri)
+            val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+            val file = File(activity?.filesDir, "${simpleDateFormat}rasm.jpg")
+            val fileOutputStream = FileOutputStream(file)
+            inputStream?.copyTo(fileOutputStream)
 
+            inputStream?.close()
+            fileOutputStream.close()
 
+            image = file.absolutePath
+        }
 
-
-
+    private fun createImageFile(): File {
+        val format = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val externalFilesDir = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        println("createImageFile ishlayapti")
+        return File.createTempFile("JPEG_$format", ".jpg", externalFilesDir).apply {
+            currentImagePath = absolutePath
+        }
+    }
 
     fun seriaNumberGet() {
-       /* var passportSeria = ""
-        val listdate = appDatabase.userDao().getAllUser()
-        val characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        for (i in 0..1) {
-            passportSeria += Random().nextInt(characterSet.length).toString()
-        }
-        for (i in 0 until 7) {
-            passportSeria += Random().nextInt(10)
-        }
-        for (i in listdate.indices) {
-            if (listdate[i].seriaNumber == passportSeria) {
-                seriaNumberGet()
-            }
-        }
-        seriaNumber = passportSeria*/
+        /* var passportSeria = ""
+         val listdate = appDatabase.userDao().getAllUser()
+         val characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+         for (i in 0..1) {
+             passportSeria += Random().nextInt(characterSet.length).toString()
+         }
+         for (i in 0 until 7) {
+             passportSeria += Random().nextInt(10)
+         }
+         for (i in listdate.indices) {
+             if (listdate[i].seriaNumber == passportSeria) {
+                 seriaNumberGet()
+             }
+         }
+         seriaNumber = passportSeria*/
 
         val rand = Random()
 

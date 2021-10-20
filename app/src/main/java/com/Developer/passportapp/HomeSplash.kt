@@ -17,13 +17,14 @@ class HomeSplash : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeSplashBinding.inflate(layoutInflater)
-        val c = Runnable {
-            splash_text.visibility = View.GONE
+        if (objectSplesh.istrue) {
+            binding = FragmentHomeSplashBinding.inflate(layoutInflater)
+            val c = Runnable {
+                splash_text.visibility = View.GONE
+            }
+            val handler = Handler()
+            handler.postDelayed(c, 2000)
         }
-        val handler = Handler()
-        handler.postDelayed(c, 2000)
-
         binding.addUsersBtn.setOnClickListener {
             findNavController().navigate(R.id.addPassport)
         }
@@ -33,6 +34,11 @@ class HomeSplash : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        objectSplesh.istrue = false
     }
 
 
